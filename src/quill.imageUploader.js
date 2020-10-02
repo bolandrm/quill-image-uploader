@@ -146,10 +146,12 @@ class ImageUploader {
     }
 
     insertBase64Image(url) {
+        if (this.options.skipBase64Preview) return
+
         const range = this.range;
         this.quill.insertEmbed(
             range.index,
-            LoadingImage.blotName,
+            "image",
             `${url}`,
             "user"
         );
@@ -158,7 +160,11 @@ class ImageUploader {
     insertToEditor(url) {
         const range = this.range;
         // Delete the placeholder image
-        this.quill.deleteText(range.index, 3, "user");
+        // this.quill.deleteText(range.index, 3, "user");
+
+        if (!this.options.skipBase64Preview) {
+            this.quill.deleteText(range.index, 1, "user");
+        }
         // Insert the server saved image
         this.quill.insertEmbed(range.index, "image", `${url}`, "user");
 
@@ -167,8 +173,10 @@ class ImageUploader {
     }
 
     removeBase64Image() {
+        if (this.options.skipBase64Preview) return
+
         const range = this.range;
-        this.quill.deleteText(range.index, 3, "user");
+        this.quill.deleteText(range.index, 1, "user");
     }
 }
 
